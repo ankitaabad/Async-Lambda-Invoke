@@ -1,0 +1,32 @@
+service: 
+  name: experiment
+provider:
+  name: aws
+  
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "lambda:InvokeFunction"
+        - "lambda:InvokeAsync"
+      Resource: "*"
+  runtime: nodejs14.x
+  stage: dev
+  region: ap-south-1
+  profile: sandbox
+  environment:
+    FUNCTION_PREFIX: ${self:service.name}-${self:provider.stage}
+    REGION: ${self:provider.region}
+    
+plugins:
+  - serverless-offline
+
+
+functions:
+  lambda-one:
+    handler: one.handler
+    events:
+      - http: ANY /
+      - http: 'ANY {proxy+}'
+  lambda-two:
+    handler: two.handler
+ 
